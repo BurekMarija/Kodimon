@@ -10,6 +10,10 @@ export default function Pokemon(props) {
    else if((percent>30) && (percent<50)){
     document.getElementById(props.id).style.backgroundColor = "orange";
    }
+   else if((percent>50)){
+    document.getElementById(props.id).style.backgroundColor = "#62FF84";
+    document.getElementById(`bar${props.id}`).style.border = "1px solid #079325";
+   }
    
   return (
     <div className='pokemonBox'>

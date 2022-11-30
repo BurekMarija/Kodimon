@@ -151,3 +151,13 @@ button{
   50%  {transform: translateX(-500px);}
   100% {transform: translateX(0px);}
 }
+
+.animateMiss {
+  animation: miss 500ms ease-in;
+}
+
+@keyframes miss {
+  0%   {transform: rotate(0deg);}
+  50%  {transform: rotate(180deg);}
+  100% {transform: rotate(359deg);}
+}

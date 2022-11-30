@@ -7,6 +7,7 @@ function App() {
   const [gameOn, setGameOn] =React.useState(false)
 
   function changeGameOn(){
+    console.log("ok")
     setGameOn(!gameOn)
   }
 

@@ -14,67 +14,49 @@ export default function Game(props) {
     const [pobjednik, setPobjednik]=React.useState(null)
 
    React.useEffect(()=>{
-    let broj1=Math.floor(Math.random() * 20) + 1
-    let broj2=Math.floor(Math.random() * 20) + 1
-        fetch(`https://pokeapi.co/api/v2/pokemon/${broj1}`)
-        .then((res) => res.json())
-       .then((data) => {
-        console.log(data)
-        let pok1={name:data.name, 
-            url:data.sprites.back_default, 
-            hp:data.stats[0].base_stat,
-            life:data.stats[0].base_stat,
-            attack:data.stats[1].base_stat, 
-            defense:data.stats[2].base_stat,
-            speed:data.stats[5].base_stat}
-        setPokemon1(pok1)
-       })
-
-       fetch(`https://pokeapi.co/api/v2/pokemon/${broj2}`)
-        .then((res) => res.json())
-       .then((data) => {
-        let pok2={name:data.name, 
-            url:data.sprites.back_default, 
-            hp:data.stats[0].base_stat,
-            life:data.stats[0].base_stat,
-            attack:data.stats[1].base_stat, 
-            defense:data.stats[2].base_stat,
-            speed:data.stats[5].base_stat}
-        setPokemon2(pok2)
-       })
-
+    catchPokemons()
+    
     } , [])
-   
+
+    if(onOfense===0){
+          if(pokemon1.speed>pokemon2.speed){setOfense(1)}
+          if(pokemon1.speed<pokemon2.speed){setOfense(2)}
+        }
+
+
+   React.useEffect(()=>{
+    if(onOfense===1){document.getElementById("arrow").style.transform="rotate(180deg)";}
+    else{document.getElementById("arrow").style.transform="rotate(0deg)";}
+    } , [onOfense])
 
     //Provjeravam dali netko od 2 igrača nije "živ"
     React.useEffect(()=>{
         if(pokemon1.life<0){
             setPobjednik(pokemon2.name)
-            console.log(pobjednik, "bravo")
         }
         else if(pokemon2.life<0){
             setPobjednik(pokemon1.name)
-            console.log(pobjednik, "bravo")
         }
     } , [pokemon1.life, pokemon2.life])
 
     function attack(){
+
         let broj=Math.floor(Math.random() * 5) + 1
-         let ikona1=document.getElementById(`img1`)
+         let ikona1=document.getElementById("img1")
          let ikona2=document.getElementById("img2")
         
         
-        
-       
         if(broj>4){
             setLogs(prije=>([...prije, `${onOfense===1?pokemon1.name:pokemon2.name} missed`]))
+            if(onOfense===1){ikona1.classList.add("animateMiss")
+            setTimeout(function() {
+         ikona1.classList.remove("animateMiss");}, 500);}
+         if(onOfense===2){ikona2.classList.add("animateMiss")
+            setTimeout(function() {
+         ikona2.classList.remove("animateMiss");}, 500);}
             setOfense(prije=>onOfense===1?2:1)
             return}
-        if(onOfense===0){
-          if(pokemon1.speed>pokemon2.speed){setOfense(1)
-         document.getElementById("arrow").style.transform="rotate(180deg)";}
-          else(setOfense(2))
-        }
+        
         if(onOfense===1){
             let allAttack=((pokemon1.attack/2)/100)*(100-pokemon2.defense)
            let newLife=pokemon2.life-allAttack
@@ -84,7 +66,7 @@ export default function Game(props) {
            ikona1.classList.add("animate1")
            setTimeout(function() {
         ikona1.classList.remove("animate1");}, 500);
-           document.getElementById("arrow").style.transform="rotate(0deg)";
+           
         }
         if(onOfense===2){
             let allAttack=((pokemon2.attack/2)/100)*(100-pokemon1.defense)
@@ -95,8 +77,55 @@ export default function Game(props) {
            ikona2.classList.add("animate2")
            setTimeout(function() {
         ikona1.classList.remove("animate2");}, 500);
-           document.getElementById("arrow").style.transform="rotate(180deg)";
         }
+    }
+
+    function newGame(){
+        catchPokemons()
+        setLogs([])
+        setPobjednik(null)
+        onOfense(0)
+    }
+    function resetOpponent(){
+        setPokemon1(prije=>({...prije, life:prije.hp}))
+        let broj=Math.floor(Math.random() * 20) + 1
+        fetch(`https://pokeapi.co/api/v2/pokemon/${broj}`)
+        .then((res) => res.json())
+       .then((data) => {
+        console.log(data)
+        let pok={name:data.name, 
+            url:data.sprites.back_default, 
+            hp:data.stats[0].base_stat,
+            life:data.stats[0].base_stat,
+            attack:data.stats[1].base_stat, 
+            defense:data.stats[2].base_stat,
+            speed:data.stats[5].base_stat}
+        setPokemon2(pok)
+       })
+        setPobjednik(null)
+        onOfense(0)
+
+    }
+
+    function catchPokemons(){
+        for(let i=1; i<3; i++){
+       let broj=Math.floor(Math.random() * 20) + 1
+        fetch(`https://pokeapi.co/api/v2/pokemon/${broj}`)
+        .then((res) => res.json())
+       .then((data) => {
+        console.log(data)
+        let pok={name:data.name, 
+            url:data.sprites.back_default, 
+            hp:data.stats[0].base_stat,
+            life:data.stats[0].base_stat,
+            attack:data.stats[1].base_stat, 
+            defense:data.stats[2].base_stat,
+            speed:data.stats[5].base_stat}
+        if(i===1){setPokemon1(pok)}
+        else{setPokemon2(pok)}
+       })
+    }
+
     }
 
   return (
@@ -111,7 +140,7 @@ export default function Game(props) {
         {pokemon2!==undefined &&<Pokemon id={2} pokemon={pokemon2}/>}
     </div>
     <div className='down'>
-        <Menu changeGameOn={props.changeGameOn}/>
+        <Menu changeGameOn={props.changeGameOn} newGame={newGame} resetOpponent={resetOpponent}/>
         <Logs logs={logs}/>
     </div>
     </div>
