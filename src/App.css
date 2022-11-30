@@ -1,5 +1,7 @@
-
-
+body{
+  font-size: 12px;
+  font-family: Bellota;
+}
 .greetScreen{
   width: 600px;
   margin-left: auto;
@@ -29,6 +31,95 @@
   position: relative;
 }
 
+.battleBox{
+  display: flex;
+  justify-content: space-between;
+  margin: 40px;
+
+}
+
+.pokemonBox{
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+}
+
+.progresBar{
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+  height: 10px;
+  border: 1px solid #079325;
+  border-radius: 5px;
+}
+.progres{
+  width: 100px;
+  height: 10px;
+  background-color: #62FF84;
+}
+
+.pokemonImg{
+  width: 200px;
+}
+
+.name{
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.stats{
+  font-size: 12px;
+  padding: 6px;
+  margin-top: 6px;
+}
+
+.menu{
+  padding: 5px;
+  width: 170px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 6px;
+  margin-top: 6px;
+}
+
+.okvir{
+ background-color: #FFF7D6;
+  border: 3px solid #FFCC00;
+  border-radius: 10px;
+}
+
+.logs {
+width: 400px;
+min-height: 150px;
+max-height: 250px;
+padding: 5px;
+text-transform:capitalize;
+overflow:scroll;
+}
+.logs p{
+  margin: 4px;
+}
+
+.menu button{
+  margin: 4px;
+}
+
+.down{
+  display: flex;
+  justify-content: space-around;
+}
+
+.attackBox{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.attackBox img{
+  margin: 10px;
+}
 
 button{
   width: 160px;
@@ -38,4 +129,25 @@ button{
   padding: 8px;
   border-radius: 20px;
 
+}
+
+
+.animate1 {
+  animation: attack1 500ms ease-in;
+}
+
+@keyframes attack1 {
+  0%   {transform: translateX(0px);}
+  50%  {transform: translateX(500px);}
+  100% {transform: translateX(0px);}
+}
+
+.animate2 {
+  animation: attack2 500ms ease-in;
+}
+
+@keyframes attack2 {
+  0%   {transform: translateX(0px);}
+  50%  {transform: translateX(-500px);}
+  100% {transform: translateX(0px);}
 }

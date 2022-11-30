@@ -9,7 +9,7 @@ export default function Greet(props) {
         <img className='kodi' src={kodi} alt="" />
       <img className='logo' src={logo} alt="" />
     </div>
-    <button className='newGame' onClick={props.newGame}>New Game</button>
+    <button className='newGame' onClick={props.changeGameOn}>New Game</button>
     </div>
   )
 }

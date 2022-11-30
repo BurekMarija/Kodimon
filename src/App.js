@@ -6,17 +6,19 @@ import Game from './Game';
 function App() {
   const [gameOn, setGameOn] =React.useState(false)
 
-  function newGame(){
+  function changeGameOn(){
     setGameOn(!gameOn)
   }
+
+
 
   return (
     <div className="App">
      {gameOn===false &&
      <Greet gameOn={gameOn}
-            newGame={newGame}
+            changeGameOn={changeGameOn}
      />}
-     {gameOn===true && <Game/>}
+     {gameOn===true && <Game changeGameOn={changeGameOn}/>}
     </div>
   );
 }
