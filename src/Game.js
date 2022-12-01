@@ -34,11 +34,11 @@ export default function Game(props) {
 
     //Provjeravam dali netko od 2 igrača nije "živ"
     React.useEffect(()=>{
-        if(pokemon1.life<0){
+        if(pokemon1.life<=0){
             setPobjednik(pokemon2.name)
             setLogs(prije=>([...prije, `${pokemon1.name} died`]))
         }
-        else if(pokemon2.life<0){
+        else if(pokemon2.life<=0){
             setPobjednik(pokemon1.name)
             setLogs(prije=>([...prije, `${pokemon2.name} died`]))
         }
