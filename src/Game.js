@@ -62,10 +62,11 @@ export default function Game(props) {
            let newLife=pokemon2.life-allAttack
            setPokemon2((pok)=>({...pok, life:newLife}))
            setLogs(prije=>([...prije, `${pokemon1.name} attaked ${pokemon2.name} for ${allAttack} dmg`]))
-           setOfense(2)
            ikona1.classList.add("animate1")
            setTimeout(function() {
         ikona1.classList.remove("animate1");}, 500);
+           setOfense(2)
+           
            
         }
         if(onOfense===2){
@@ -73,10 +74,11 @@ export default function Game(props) {
            let newLife=pokemon1.life-allAttack
            setPokemon1((pok)=>({...pok, life:newLife}))
            setLogs(prije=>([...prije, `${pokemon2.name} attaked ${pokemon1.name} for ${allAttack} dmg`]))
-           setOfense(1)
            ikona2.classList.add("animate2")
            setTimeout(function() {
         ikona1.classList.remove("animate2");}, 500);
+           setOfense(1)
+           
         }
     }
 
