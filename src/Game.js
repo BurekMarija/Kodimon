@@ -14,11 +14,11 @@ export default function Game(props) {
     const [pobjednik, setPobjednik]=React.useState(null)
     const [napad, setNapad]=React.useState(false)
     const [message, setMessage]=React.useState()
-
+    let menuPos={}
+    let messagePos={}
 
    React.useEffect(()=>{
     catchPokemons()
-    
     } , [])
 
     if(onOfense===0){
@@ -34,16 +34,15 @@ export default function Game(props) {
 
     //Provjeravam dali netko od 2 igrača nije "živ"
     React.useEffect(()=>{
-        if(pokemon1.life<=0){
+        if(pokemon1.life<1){
             setPobjednik(pokemon2.name)
             setLogs(prije=>([...prije, `${pokemon1.name} died`]))
         }
-        else if(pokemon2.life<=0){
+        else if(pokemon2.life<1){
             setPobjednik(pokemon1.name)
             setLogs(prije=>([...prije, `${pokemon2.name} died`]))
         }
     } , [pokemon1.life, pokemon2.life])
-
 
     //Napad logika i izračun
     function attack(){
@@ -103,20 +102,26 @@ export default function Game(props) {
     //Delay za trajanje attac-a
     React.useEffect(() => {
   const timer = setTimeout(() => {setNapad(false)
-         document.getElementById("attackButton").disabled=false}, 700);
+         document.getElementById("attackButton").disabled=false
+        }, 700);
   return () => clearTimeout(timer);
 }, [onOfense]);
 
     //New game 
     function newGame(){
+        setPobjednik(null)
         catchPokemons()
         setLogs([])
-        setPobjednik(null)
         setOfense(0)
+        setNapad(false)
+        console.log(pobjednik, "pobjednik")
+
     }
+    console.log(pobjednik)
 
     //Reset opponent
     function resetOpponent(){
+        setPobjednik(null)
         setPokemon1(prije=>({...prije, life:prije.hp}))
         let broj=Math.floor(Math.random() * 20) + 1
         fetch(`https://pokeapi.co/api/v2/pokemon/${broj}`)
@@ -132,10 +137,10 @@ export default function Game(props) {
             class:""}
         setPokemon2(pok)
        })
-        setPobjednik(null)
         setOfense(0)
-
+        console.log(pobjednik, "pobjednik")
     }
+    
 
     function catchPokemons(){
         for(let i=1; i<3; i++){
@@ -166,17 +171,7 @@ export default function Game(props) {
         
     }
 
-    let menuPos={}
-    if(pobjednik!==null){
-        menuPos={
-        position:"absolute",
-        top: "20%",
-        left: "40%"
-    }
-    }
-
-    let messagePos={}
-    if(onOfense===2){
+     if(onOfense===2){
         messagePos={
         position:"absolute",
         top: "10%",
@@ -195,17 +190,28 @@ export default function Game(props) {
     }
     }
 
+    if(pobjednik!==null){
+        menuPos={
+        position:"absolute",
+        top: "20%",
+        left: "40%"
+    }
+    }
+    React.useEffect(()=>{ menuPos={}}, [pokemon2])
+     
+
+
   return (
     <div className='mainBox'>
         {pobjednik!==null && <h1 className='pobjednik'>{pobjednik} won</h1>}
     <div className='battleBox' style={shade}>
-        {pokemon1!==undefined &&<Pokemon id={1} pokemon={pokemon1}/>}
+        <Pokemon id={1} pokemon={pokemon1}/>
         <div className='attackBox'>
             {napad &&<div style={messagePos} className='message'>{message}</div>}
             <img src={arrow} alt="" id="arrow"/>
-            {pobjednik===null && <button id="attackButton" style={shade2} onClick={attack} >Attack!</button>}
+             <button id="attackButton" style={shade2} onClick={attack} >Attack!</button>
             </div>
-        {pokemon2!==undefined &&<Pokemon id={2} pokemon={pokemon2}/>}
+        <Pokemon id={2} pokemon={pokemon2}/>
     </div>
     <div className='down' >
         <div style={menuPos}><Menu changeGameOn={props.changeGameOn} newGame={newGame} resetOpponent={resetOpponent}/></div>
