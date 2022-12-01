@@ -12,6 +12,9 @@ export default function Game(props) {
     const [onOfense, setOfense]=React.useState(0)
     const [logs, setLogs]=React.useState([])
     const [pobjednik, setPobjednik]=React.useState(null)
+    const [napad, setNapad]=React.useState(false)
+    const [message, setMessage]=React.useState()
+
 
    React.useEffect(()=>{
     catchPokemons()
@@ -23,7 +26,7 @@ export default function Game(props) {
           if(pokemon1.speed<pokemon2.speed){setOfense(2)}
         }
 
-
+        //Okretanje strijelice za napad
    React.useEffect(()=>{
     if(onOfense===1){document.getElementById("arrow").style.transform="rotate(180deg)";}
     else{document.getElementById("arrow").style.transform="rotate(0deg)";}
@@ -33,9 +36,11 @@ export default function Game(props) {
     React.useEffect(()=>{
         if(pokemon1.life<0){
             setPobjednik(pokemon2.name)
+            setLogs(prije=>([...prije, `${pokemon1.name} died`]))
         }
         else if(pokemon2.life<0){
             setPobjednik(pokemon1.name)
+            setLogs(prije=>([...prije, `${pokemon2.name} died`]))
         }
     } , [pokemon1.life, pokemon2.life])
 
@@ -44,25 +49,33 @@ export default function Game(props) {
     function attack(){
 
         let broj=Math.floor(Math.random() * 5) + 1
+        document.getElementById("attackButton").disabled=true
         
         if(broj>4){
             setLogs(prije=>([...prije, `${onOfense===1?pokemon1.name:pokemon2.name} missed`]))
             if(onOfense===1){
                 setPokemon1(prije=>({...prije, class:"animateMiss"}))
                 setPokemon2(prije=>({...prije, class:""}))
+                setNapad(true)
+                setMessage("Miss")
+                
             }
                 
             if(onOfense===2){
                 setPokemon2(prije=>({...prije, class:"animateMiss"}))
                 setPokemon1(prije=>({...prije, class:""}))
+                setNapad(true)
+                setMessage("Miss")
             }
             setOfense(prije=>onOfense===1?2:1)
             return}
-        
+       
         if(onOfense===1){
             let allAttack=((pokemon1.attack/2)/100)*(100-pokemon2.defense)
             let round=Math.round(allAttack * 100) / 100
            let newLife=pokemon2.life-round
+           setNapad(true)
+           setMessage(round +" DMG")
            setPokemon2((pok)=>({...pok, life:newLife}))
            setLogs(prije=>([...prije, `${pokemon1.name} attaked ${pokemon2.name} for ${round} dmg`]))
            setPokemon1(prije=>({...prije, class:"animate1"}))
@@ -76,6 +89,8 @@ export default function Game(props) {
             let allAttack=((pokemon2.attack/2)/100)*(100-pokemon1.defense)
             let round=Math.round(allAttack * 100) / 100
            let newLife=pokemon1.life-round
+           setNapad(true)
+           setMessage(round+" DMG")
            setPokemon1((pok)=>({...pok, life:newLife}))
            setLogs(prije=>([...prije, `${pokemon2.name} attaked ${pokemon1.name} for ${round} dmg`]))
            setPokemon2(prije=>({...prije, class:"animate2"}))
@@ -85,19 +100,28 @@ export default function Game(props) {
         }
     }
 
+    //Delay za trajanje attac-a
+    React.useEffect(() => {
+  const timer = setTimeout(() => {setNapad(false)
+         document.getElementById("attackButton").disabled=false}, 700);
+  return () => clearTimeout(timer);
+}, [onOfense]);
+
+    //New game 
     function newGame(){
         catchPokemons()
         setLogs([])
         setPobjednik(null)
         onOfense(0)
     }
+
+    //Reset opponent
     function resetOpponent(){
         setPokemon1(prije=>({...prije, life:prije.hp}))
         let broj=Math.floor(Math.random() * 20) + 1
         fetch(`https://pokeapi.co/api/v2/pokemon/${broj}`)
         .then((res) => res.json())
        .then((data) => {
-        console.log(data)
         let pok={name:data.name, 
             url:data.sprites.back_default, 
             hp:data.stats[0].base_stat,
@@ -109,7 +133,7 @@ export default function Game(props) {
         setPokemon2(pok)
        })
         setPobjednik(null)
-        onOfense(0)
+        setOfense(0)
 
     }
 
@@ -119,7 +143,6 @@ export default function Game(props) {
         fetch(`https://pokeapi.co/api/v2/pokemon/${broj}`)
         .then((res) => res.json())
        .then((data) => {
-        console.log(data)
         let pok={name:data.name, 
             url:data.sprites.back_default, 
             hp:data.stats[0].base_stat,
@@ -138,6 +161,10 @@ export default function Game(props) {
     const shade={
         opacity: pobjednik===null? 1:0.3
     }
+    const shade2={
+        opacity: napad===false? 1:0.3
+        
+    }
 
     let menuPos={}
     if(pobjednik!==null){
@@ -147,18 +174,36 @@ export default function Game(props) {
         left: "40%"
     }
     }
-    
-    
 
+    let messagePos={}
+    if(onOfense===2){
+        messagePos={
+        position:"absolute",
+        top: "10%",
+        left: "60%",
+        transform: "rotate(-20deg)",
+        color:message==="Miss"?"black": "red"
+    }
+    }
+    if(onOfense===1){
+        messagePos={
+        position:"absolute",
+        top: "10%",
+        left: "30%",
+        transform: "rotate(20deg)",
+        color:message==="Miss"?"black": "red"
+    }
+    }
 
   return (
-    <div>
+    <div className='mainBox'>
         {pobjednik!==null && <h1 className='pobjednik'>{pobjednik} won</h1>}
     <div className='battleBox' style={shade}>
         {pokemon1!==undefined &&<Pokemon id={1} pokemon={pokemon1}/>}
         <div className='attackBox'>
+            {napad &&<div style={messagePos} className='message'>{message}</div>}
             <img src={arrow} alt="" id="arrow"/>
-            {pobjednik===null && <button onClick={attack}>Attack!</button>}
+            {pobjednik===null && <button id="attackButton" style={shade2} onClick={attack} >Attack!</button>}
             </div>
         {pokemon2!==undefined &&<Pokemon id={2} pokemon={pokemon2}/>}
     </div>

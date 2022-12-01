@@ -1,7 +1,6 @@
 import React from 'react'
 
 export default function Logs(props) {
- console.log(props)
  const allLogs=props.logs.map(prije=><p >{prije}</p>)
  
   return (
