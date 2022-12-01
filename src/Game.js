@@ -112,7 +112,7 @@ export default function Game(props) {
         catchPokemons()
         setLogs([])
         setPobjednik(null)
-        onOfense(0)
+        setOfense(0)
     }
 
     //Reset opponent
