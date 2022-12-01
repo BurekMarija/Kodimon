@@ -63,6 +63,11 @@ body{
   width: 200px;
 }
 
+#img2{
+   -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+
 .name{
   text-align: center;
   text-transform: capitalize;
@@ -111,6 +116,12 @@ overflow:scroll;
   justify-content: space-around;
 }
 
+.pobjednik{
+  position: absolute;
+  top: 50px;
+  left: 40%;
+}
+
 .attackBox{
   display: flex;
   flex-direction: column;
@@ -138,7 +149,7 @@ button{
 
 @keyframes attack1 {
   0%   {transform: translateX(0px);}
-  50%  {transform: translateX(500px);}
+  50%  {transform: translateX(600px);}
   100% {transform: translateX(0px);}
 }
 
@@ -148,7 +159,7 @@ button{
 
 @keyframes attack2 {
   0%   {transform: translateX(0px);}
-  50%  {transform: translateX(-500px);}
+  50%  {transform: translateX(-600px);}
   100% {transform: translateX(0px);}
 }
 

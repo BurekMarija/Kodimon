@@ -24,7 +24,7 @@ export default function Pokemon(props) {
         
     </div>
     <div className='name'>{props.pokemon.name}</div>
-      <img className='pokemonImg' id={`img${props.id}`} src={props.pokemon.url} alt=""/>
+      <img className={`pokemonImg ${props.pokemon.class}`} id={`img${props.id}`} src={props.pokemon.url} alt=""/>
       <div className='statsTag'>Stats</div>
       <div className='stats okvir'>
       <div>HP:{props.pokemon.hp}</div>

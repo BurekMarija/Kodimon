@@ -39,44 +39,47 @@ export default function Game(props) {
         }
     } , [pokemon1.life, pokemon2.life])
 
+
+    //Napad logika i izračun
     function attack(){
 
         let broj=Math.floor(Math.random() * 5) + 1
-         let ikona1=document.getElementById("img1")
-         let ikona2=document.getElementById("img2")
-        
         
         if(broj>4){
             setLogs(prije=>([...prije, `${onOfense===1?pokemon1.name:pokemon2.name} missed`]))
-            if(onOfense===1){ikona1.classList.add("animateMiss")
-            setTimeout(function() {
-         ikona1.classList.remove("animateMiss");}, 500);}
-         if(onOfense===2){ikona2.classList.add("animateMiss")
-            setTimeout(function() {
-         ikona2.classList.remove("animateMiss");}, 500);}
+            if(onOfense===1){
+                setPokemon1(prije=>({...prije, class:"animateMiss"}))
+                setPokemon2(prije=>({...prije, class:""}))
+            }
+                
+            if(onOfense===2){
+                setPokemon2(prije=>({...prije, class:"animateMiss"}))
+                setPokemon1(prije=>({...prije, class:""}))
+            }
             setOfense(prije=>onOfense===1?2:1)
             return}
         
         if(onOfense===1){
             let allAttack=((pokemon1.attack/2)/100)*(100-pokemon2.defense)
-           let newLife=pokemon2.life-allAttack
+            let round=Math.round(allAttack * 100) / 100
+           let newLife=pokemon2.life-round
            setPokemon2((pok)=>({...pok, life:newLife}))
-           setLogs(prije=>([...prije, `${pokemon1.name} attaked ${pokemon2.name} for ${allAttack} dmg`]))
-           ikona1.classList.add("animate1")
-           setTimeout(function() {
-        ikona1.classList.remove("animate1");}, 500);
+           setLogs(prije=>([...prije, `${pokemon1.name} attaked ${pokemon2.name} for ${round} dmg`]))
+           setPokemon1(prije=>({...prije, class:"animate1"}))
+           setPokemon2(prije=>({...prije, class:""}))
+           
            setOfense(2)
            
            
         }
         if(onOfense===2){
             let allAttack=((pokemon2.attack/2)/100)*(100-pokemon1.defense)
-           let newLife=pokemon1.life-allAttack
+            let round=Math.round(allAttack * 100) / 100
+           let newLife=pokemon1.life-round
            setPokemon1((pok)=>({...pok, life:newLife}))
-           setLogs(prije=>([...prije, `${pokemon2.name} attaked ${pokemon1.name} for ${allAttack} dmg`]))
-           ikona2.classList.add("animate2")
-           setTimeout(function() {
-        ikona1.classList.remove("animate2");}, 500);
+           setLogs(prije=>([...prije, `${pokemon2.name} attaked ${pokemon1.name} for ${round} dmg`]))
+           setPokemon2(prije=>({...prije, class:"animate2"}))
+           setPokemon1(prije=>({...prije, class:""}))
            setOfense(1)
            
         }
@@ -101,7 +104,8 @@ export default function Game(props) {
             life:data.stats[0].base_stat,
             attack:data.stats[1].base_stat, 
             defense:data.stats[2].base_stat,
-            speed:data.stats[5].base_stat}
+            speed:data.stats[5].base_stat,
+            class:""}
         setPokemon2(pok)
        })
         setPobjednik(null)
@@ -122,7 +126,8 @@ export default function Game(props) {
             life:data.stats[0].base_stat,
             attack:data.stats[1].base_stat, 
             defense:data.stats[2].base_stat,
-            speed:data.stats[5].base_stat}
+            speed:data.stats[5].base_stat,
+            class:""}
         if(i===1){setPokemon1(pok)}
         else{setPokemon2(pok)}
        })
@@ -130,20 +135,36 @@ export default function Game(props) {
 
     }
 
+    const shade={
+        opacity: pobjednik===null? 1:0.3
+    }
+
+    let menuPos={}
+    if(pobjednik!==null){
+        menuPos={
+        position:"absolute",
+        top: "20%",
+        left: "40%"
+    }
+    }
+    
+    
+
+
   return (
     <div>
-    <div className='battleBox'>
+        {pobjednik!==null && <h1 className='pobjednik'>{pobjednik} won</h1>}
+    <div className='battleBox' style={shade}>
         {pokemon1!==undefined &&<Pokemon id={1} pokemon={pokemon1}/>}
         <div className='attackBox'>
-            {pobjednik!==null && <h1>{pobjednik} won</h1>}
             <img src={arrow} alt="" id="arrow"/>
-            <button onClick={attack}>Attack!</button>
+            {pobjednik===null && <button onClick={attack}>Attack!</button>}
             </div>
         {pokemon2!==undefined &&<Pokemon id={2} pokemon={pokemon2}/>}
     </div>
-    <div className='down'>
-        <Menu changeGameOn={props.changeGameOn} newGame={newGame} resetOpponent={resetOpponent}/>
-        <Logs logs={logs}/>
+    <div className='down' >
+        <div style={menuPos}><Menu changeGameOn={props.changeGameOn} newGame={newGame} resetOpponent={resetOpponent}/></div>
+        <div style={shade}><Logs logs={logs}/></div>
     </div>
     </div>
 )
