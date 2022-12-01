@@ -172,3 +172,31 @@ button{
   50%  {transform: rotate(180deg);}
   100% {transform: rotate(359deg);}
 }
+
+@media screen and (max-width: 700px) {
+  .down{
+    display: flex;
+    flex-direction: column;
+  }
+  .battleBox button{
+    width: 90px;
+  }
+  .battleBox{
+  margin: 0px;
+  }
+  .pokemonBox{
+    width: 40%;
+    margin: 0px;
+  }
+  .logo{
+    width: 90%;
+  }
+  .kodi{
+    width: 22%;
+    left:32%;
+    top:-28%;
+  }
+  .greetScreen{
+    width: 100vw;
+  }
+}
