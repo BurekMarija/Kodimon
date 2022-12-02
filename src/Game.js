@@ -14,7 +14,6 @@ export default function Game(props) {
     const [pobjednik, setPobjednik]=React.useState(null)
     const [napad, setNapad]=React.useState(false)
     const [message, setMessage]=React.useState()
-    let menuPos={}
     let messagePos={}
 
    React.useEffect(()=>{
@@ -26,23 +25,6 @@ export default function Game(props) {
           if(pokemon1.speed<pokemon2.speed){setOfense(2)}
         }
 
-        //Okretanje strijelice za napad
-   React.useEffect(()=>{
-    if(onOfense===1){document.getElementById("arrow").style.transform="rotate(180deg)";}
-    else{document.getElementById("arrow").style.transform="rotate(0deg)";}
-    } , [onOfense])
-
-    //Provjeravam dali netko od 2 igrača nije "živ"
-    React.useEffect(()=>{
-        if(pokemon1.life<1){
-            setPobjednik(pokemon2.name)
-            setLogs(prije=>([...prije, `${pokemon1.name} died`]))
-        }
-        else if(pokemon2.life<1){
-            setPobjednik(pokemon1.name)
-            setLogs(prije=>([...prije, `${pokemon2.name} died`]))
-        }
-    } , [pokemon1.life, pokemon2.life])
 
     //Napad logika i izračun
     function attack(){
@@ -73,6 +55,7 @@ export default function Game(props) {
             let allAttack=((pokemon1.attack/2)/100)*(100-pokemon2.defense)
             let round=Math.round(allAttack * 100) / 100
            let newLife=pokemon2.life-round
+           if(newLife<=0){setPobjednik(pokemon1.name)}
            setNapad(true)
            setMessage(round +" DMG")
            setPokemon2((pok)=>({...pok, life:newLife}))
@@ -88,6 +71,7 @@ export default function Game(props) {
             let allAttack=((pokemon2.attack/2)/100)*(100-pokemon1.defense)
             let round=Math.round(allAttack * 100) / 100
            let newLife=pokemon1.life-round
+           if(newLife<=0){setPobjednik(pokemon2.name)}
            setNapad(true)
            setMessage(round+" DMG")
            setPokemon1((pok)=>({...pok, life:newLife}))
@@ -190,14 +174,6 @@ export default function Game(props) {
     }
     }
 
-    if(pobjednik!==null){
-        menuPos={
-        position:"absolute",
-        top: "20%",
-        left: "40%"
-    }
-    }
-    React.useEffect(()=>{ menuPos={}}, [pokemon2])
      
 
 
@@ -208,13 +184,21 @@ export default function Game(props) {
         <Pokemon id={1} pokemon={pokemon1}/>
         <div className='attackBox'>
             {napad &&<div style={messagePos} className='message'>{message}</div>}
-            <img src={arrow} alt="" id="arrow"/>
+            <img src={arrow} alt="" id="arrow" style={{transform:onOfense===1?"rotate(180deg)":"rotate(0deg)"}}/>
              <button id="attackButton" style={shade2} onClick={attack} >Attack!</button>
             </div>
         <Pokemon id={2} pokemon={pokemon2}/>
     </div>
     <div className='down' >
-        <div style={menuPos}><Menu changeGameOn={props.changeGameOn} newGame={newGame} resetOpponent={resetOpponent}/></div>
+        <div style={pobjednik!==null?{
+            position:"absolute",
+            top: "20%",
+            left: "40%"
+        }
+            :null}>
+        <Menu changeGameOn={props.changeGameOn} 
+        newGame={newGame} 
+        resetOpponent={resetOpponent}/></div>
         <div style={shade}><Logs logs={logs}/></div>
     </div>
     </div>
