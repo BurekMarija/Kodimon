@@ -3,18 +3,23 @@ import './App.css';
 import Pokemon from './Pokemon';
 import Menu from './Menu';
 import Logs from './Logs';
-import arrow from "./images/arrow.svg"
+import arrow from "./images/arrow.svg";
+import {useSelector, useDispatch} from "react-redux";
+import { setPobjedik } from './reducer/pobjednik';
+import { addLog, resetLog } from './reducer/logsReducer';
 
 
 export default function Game(props) {
     const [pokemon1, setPokemon1]=React.useState([])
     const [pokemon2, setPokemon2]=React.useState([])
     const [onOfense, setOfense]=React.useState(0)
-    const [logs, setLogs]=React.useState([])
-    const [pobjednik, setPobjednik]=React.useState(null)
     const [napad, setNapad]=React.useState(false)
     const [message, setMessage]=React.useState()
     let messagePos={}
+    let pok1
+    const pobjednik=useSelector(state=>state.pobjednikReducer)
+    const dispatch=useDispatch()
+
 
    React.useEffect(()=>{
     catchPokemons()
@@ -33,7 +38,7 @@ export default function Game(props) {
         document.getElementById("attackButton").disabled=true
         
         if(broj>4){
-            setLogs(prije=>([...prije, `${onOfense===1?pokemon1.name:pokemon2.name} missed`]))
+            dispatch (addLog(`${onOfense===1?pokemon1.name:pokemon2.name} missed`))
             if(onOfense===1){
                 setPokemon1(prije=>({...prije, class:"animateMiss"}))
                 setPokemon2(prije=>({...prije, class:""}))
@@ -55,11 +60,12 @@ export default function Game(props) {
             let allAttack=((pokemon1.attack/2)/100)*(100-pokemon2.defense)
             let round=Math.round(allAttack * 100) / 100
            let newLife=pokemon2.life-round
-           if(newLife<=0){setPobjednik(pokemon1.name)}
+           if(newLife<=0){
+            dispatch(setPobjedik(pokemon1.name))}
            setNapad(true)
            setMessage(round +" DMG")
            setPokemon2((pok)=>({...pok, life:newLife}))
-           setLogs(prije=>([...prije, `${pokemon1.name} attaked ${pokemon2.name} for ${round} dmg`]))
+           dispatch (addLog(`${pokemon1.name} attaked ${pokemon2.name} for ${round} dmg`))
            setPokemon1(prije=>({...prije, class:"animate1"}))
            setPokemon2(prije=>({...prije, class:""}))
            
@@ -71,11 +77,12 @@ export default function Game(props) {
             let allAttack=((pokemon2.attack/2)/100)*(100-pokemon1.defense)
             let round=Math.round(allAttack * 100) / 100
            let newLife=pokemon1.life-round
-           if(newLife<=0){setPobjednik(pokemon2.name)}
+           if(newLife<=0){
+            dispatch(setPobjedik(pokemon2.name))}
            setNapad(true)
            setMessage(round+" DMG")
            setPokemon1((pok)=>({...pok, life:newLife}))
-           setLogs(prije=>([...prije, `${pokemon2.name} attaked ${pokemon1.name} for ${round} dmg`]))
+           dispatch (addLog(`${pokemon2.name} attaked ${pokemon1.name} for ${round} dmg`))
            setPokemon2(prije=>({...prije, class:"animate2"}))
            setPokemon1(prije=>({...prije, class:""}))
            setOfense(1)
@@ -93,19 +100,38 @@ export default function Game(props) {
 
     //New game 
     function newGame(){
-        setPobjednik(null)
+        dispatch(setPobjedik(null))
         catchPokemons()
-        setLogs([])
+        dispatch(resetLog())
         setOfense(0)
         setNapad(false)
-        console.log(pobjednik, "pobjednik")
 
     }
-    console.log(pobjednik)
+
+    //Uhvati pokemona
+    function getPokemon(){
+        let broj=Math.floor(Math.random() * 20) + 1
+        fetch(`https://pokeapi.co/api/v2/pokemon/${broj}`)
+        .then((res) => res.json())
+       .then((data) => {
+        let pok={name:data.name, 
+            url:data.sprites.back_default, 
+            hp:data.stats[0].base_stat,
+            life:data.stats[0].base_stat,
+            attack:data.stats[1].base_stat, 
+            defense:data.stats[2].base_stat,
+            speed:data.stats[5].base_stat,
+            class:""}
+            console.log(pok)
+       })
+    }
+
+    
 
     //Reset opponent
     function resetOpponent(){
-        setPobjednik(null)
+        getPokemon()
+        dispatch(setPobjedik(null))
         setPokemon1(prije=>({...prije, life:prije.hp}))
         let broj=Math.floor(Math.random() * 20) + 1
         fetch(`https://pokeapi.co/api/v2/pokemon/${broj}`)
@@ -122,7 +148,6 @@ export default function Game(props) {
         setPokemon2(pok)
        })
         setOfense(0)
-        console.log(pobjednik, "pobjednik")
     }
     
 
@@ -199,7 +224,7 @@ export default function Game(props) {
         <Menu changeGameOn={props.changeGameOn} 
         newGame={newGame} 
         resetOpponent={resetOpponent}/></div>
-        <div style={shade}><Logs logs={logs}/></div>
+        <div style={shade}><Logs /></div>
     </div>
     </div>
 )
