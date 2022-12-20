@@ -8,16 +8,30 @@ import {useSelector, useDispatch} from "react-redux";
 import { setPobjedik } from './reducer/pobjednik';
 import { addLog, resetLog } from './reducer/logsReducer';
 
+interface Props{
+    changeGameOn: ()=> void
+}
 
-export default function Game(props) {
-    const [pokemon1, setPokemon1]=React.useState([])
-    const [pokemon2, setPokemon2]=React.useState([])
-    const [onOfense, setOfense]=React.useState(0)
-    const [napad, setNapad]=React.useState(false)
-    const [message, setMessage]=React.useState()
+interface Pokemon{
+        name:string;
+        url:string;
+        hp:number;
+        attack:number; 
+        defense:number;
+        speed:number;
+        life:number;
+        class:string
+
+}
+
+export default function Game(props:Props) {
+    const [pokemon1, setPokemon1]=React.useState<Pokemon | undefined>()
+    const [pokemon2, setPokemon2]=React.useState<Pokemon | undefined>()
+    const [onOfense, setOfense]=React.useState<number>(0)
+    const [napad, setNapad]=React.useState<boolean>(false)
+    const [message, setMessage]=React.useState<string>()
     let messagePos={}
-    let pok1
-    const pobjednik=useSelector(state=>state.pobjednikReducer)
+    const pobjednik=useSelector((state)=>state.pobjednikReducer)
     const dispatch=useDispatch()
 
 
@@ -26,30 +40,38 @@ export default function Game(props) {
     } , [])
 
     if(onOfense===0){
-          if(pokemon1.speed>pokemon2.speed){setOfense(1)}
+        if(pokemon1 && pokemon2){
+            if(pokemon1.speed>pokemon2.speed){setOfense(1)}
           if(pokemon1.speed<pokemon2.speed){setOfense(2)}
+        }
+          
         }
 
 
     //Napad logika i izračun
     function attack(){
-
-        let broj=Math.floor(Math.random() * 5) + 1
-        document.getElementById("attackButton").disabled=true
+        if(pokemon1 && pokemon2){
+            let broj=Math.floor(Math.random() * 5) + 1
+        const gumb=document.getElementById("attackButton") as HTMLButtonElement | null
+         if(gumb!==null){gumb.disabled=true}
         
         if(broj>4){
             dispatch (addLog(`${onOfense===1?pokemon1.name:pokemon2.name} missed`))
             if(onOfense===1){
-                setPokemon1(prije=>({...prije, class:"animateMiss"}))
-                setPokemon2(prije=>({...prije, class:""}))
+                const zamjenskiPok1={...pokemon1, class:"animateMiss"}
+                setPokemon1(zamjenskiPok1)
+                const zamjenskiPok2={...pokemon2, class:""}
+                setPokemon2(zamjenskiPok2)
                 setNapad(true)
                 setMessage("Miss")
                 
             }
                 
             if(onOfense===2){
-                setPokemon2(prije=>({...prije, class:"animateMiss"}))
-                setPokemon1(prije=>({...prije, class:""}))
+                const zamjenskiPok2={...pokemon2, class:"animateMiss"}
+                setPokemon1(zamjenskiPok2)
+                const zamjenskiPok1={...pokemon1, class:""}
+                setPokemon2(zamjenskiPok1)
                 setNapad(true)
                 setMessage("Miss")
             }
@@ -64,11 +86,11 @@ export default function Game(props) {
             dispatch(setPobjedik(pokemon1.name))}
            setNapad(true)
            setMessage(round +" DMG")
-           setPokemon2((pok)=>({...pok, life:newLife}))
+           const zamjenskiPok2={...pokemon2, life:newLife, class:""}
+           setPokemon2(zamjenskiPok2)
            dispatch (addLog(`${pokemon1.name} attaked ${pokemon2.name} for ${round} dmg`))
-           setPokemon1(prije=>({...prije, class:"animate1"}))
-           setPokemon2(prije=>({...prije, class:""}))
-           
+           const zamjenskiPok1={...pokemon1, class:"animate1"}
+            setPokemon1(zamjenskiPok1)
            setOfense(2)
            
            
@@ -81,19 +103,25 @@ export default function Game(props) {
             dispatch(setPobjedik(pokemon2.name))}
            setNapad(true)
            setMessage(round+" DMG")
-           setPokemon1((pok)=>({...pok, life:newLife}))
+           const zamjenskiPok1={...pokemon1, life:newLife, class:""}
+           setPokemon1(zamjenskiPok1)
            dispatch (addLog(`${pokemon2.name} attaked ${pokemon1.name} for ${round} dmg`))
-           setPokemon2(prije=>({...prije, class:"animate2"}))
-           setPokemon1(prije=>({...prije, class:""}))
+           const zamjenskiPok2={...pokemon2, class:"animate2"}
+            setPokemon2(zamjenskiPok2)
            setOfense(1)
            
         }
+
+        }
+
+        
     }
 
     //Delay za trajanje attac-a
     React.useEffect(() => {
   const timer = setTimeout(() => {setNapad(false)
-         document.getElementById("attackButton").disabled=false
+         const gumb=document.getElementById("attackButton") as HTMLButtonElement | null
+         if(gumb!==null){gumb.disabled=false}
         }, 700);
   return () => clearTimeout(timer);
 }, [onOfense]);
@@ -109,20 +137,20 @@ export default function Game(props) {
     }
 
     //Uhvati pokemona
-    function getPokemon(){
+    function getPokemon(id:number){
         let broj=Math.floor(Math.random() * 20) + 1
         fetch(`https://pokeapi.co/api/v2/pokemon/${broj}`)
         .then((res) => res.json())
        .then((data) => {
-        let pok={name:data.name, 
+        let pok: Pokemon={name:data.name, 
             url:data.sprites.back_default, 
             hp:data.stats[0].base_stat,
-            life:data.stats[0].base_stat,
             attack:data.stats[1].base_stat, 
             defense:data.stats[2].base_stat,
             speed:data.stats[5].base_stat,
+            life:data.stats[0].base_stat,
             class:""}
-            console.log(pok)
+            id===1?setPokemon1(pok): setPokemon2(pok)
        })
     }
 
@@ -130,45 +158,19 @@ export default function Game(props) {
 
     //Reset opponent
     function resetOpponent(){
-        getPokemon()
         dispatch(setPobjedik(null))
-        setPokemon1(prije=>({...prije, life:prije.hp}))
-        let broj=Math.floor(Math.random() * 20) + 1
-        fetch(`https://pokeapi.co/api/v2/pokemon/${broj}`)
-        .then((res) => res.json())
-       .then((data) => {
-        let pok={name:data.name, 
-            url:data.sprites.back_default, 
-            hp:data.stats[0].base_stat,
-            life:data.stats[0].base_stat,
-            attack:data.stats[1].base_stat, 
-            defense:data.stats[2].base_stat,
-            speed:data.stats[5].base_stat,
-            class:""}
-        setPokemon2(pok)
-       })
+        if(pokemon1){
+            const zamjenskiPok1={...pokemon1, life:pokemon1.hp}
+            setPokemon1(zamjenskiPok1)
+                    }
+        getPokemon(2)
         setOfense(0)
     }
     
-
+  //Postavljane oba pokemona
     function catchPokemons(){
-        for(let i=1; i<3; i++){
-       let broj=Math.floor(Math.random() * 20) + 1
-        fetch(`https://pokeapi.co/api/v2/pokemon/${broj}`)
-        .then((res) => res.json())
-       .then((data) => {
-        let pok={name:data.name, 
-            url:data.sprites.back_default, 
-            hp:data.stats[0].base_stat,
-            life:data.stats[0].base_stat,
-            attack:data.stats[1].base_stat, 
-            defense:data.stats[2].base_stat,
-            speed:data.stats[5].base_stat,
-            class:""}
-        if(i===1){setPokemon1(pok)}
-        else{setPokemon2(pok)}
-       })
-    }
+      getPokemon(1)
+      getPokemon(2)
 
     }
 
@@ -206,13 +208,13 @@ export default function Game(props) {
     <div className='mainBox'>
         {pobjednik!==null && <h1 className='pobjednik'>{pobjednik} won</h1>}
     <div className='battleBox' style={shade}>
-        <Pokemon id={1} pokemon={pokemon1}/>
+        {pokemon1 &&<Pokemon id={1} pokemon={pokemon1}/>}
         <div className='attackBox'>
             {napad &&<div style={messagePos} className='message'>{message}</div>}
             <img src={arrow} alt="" id="arrow" style={{transform:onOfense===1?"rotate(180deg)":"rotate(0deg)"}}/>
              <button id="attackButton" style={shade2} onClick={attack} >Attack!</button>
             </div>
-        <Pokemon id={2} pokemon={pokemon2}/>
+        {pokemon2 &&<Pokemon id={2} pokemon={pokemon2}/>}
     </div>
     <div className='down' >
         <div style={pobjednik!==null?{
