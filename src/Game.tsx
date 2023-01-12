@@ -130,7 +130,7 @@ export default function Game(props: Props) {
     }
   }
 
-  //Delay za trajanje attac-a
+  //Delay za trajanje attack-a
   React.useEffect(() => {
     const timer = setTimeout(() => {
       setNapad(false);

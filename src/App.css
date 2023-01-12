@@ -1,15 +1,14 @@
-body{
+body {
   font-size: 12px;
   font-family: Bellota;
 }
-.mainBox{
+.mainBox {
   max-width: 900px;
   margin-left: auto;
   margin-right: auto;
-
 }
 
-.greetScreen{
+.greetScreen {
   width: 600px;
   margin-left: auto;
   margin-right: auto;
@@ -20,39 +19,37 @@ body{
   align-items: center;
 }
 
-.logoBox{
+.logoBox {
   margin-top: 100px;
   position: relative;
 }
 
-.kodi{
-  position:absolute;
-  left:224px;
-  top:-60px;
+.kodi {
+  position: absolute;
+  left: 224px;
+  top: -60px;
   transform: rotate(-30deg);
-
 }
 
-.logo{
+.logo {
   width: 600px;
   position: relative;
 }
 
-.battleBox{
+.battleBox {
   display: flex;
   justify-content: space-between;
   margin: 40px;
-
 }
 
-.pokemonBox{
+.pokemonBox {
   width: 200px;
   display: flex;
   flex-direction: column;
   margin: 10px;
 }
 
-.progresBar{
+.progresBar {
   width: 70%;
   margin-left: auto;
   margin-right: auto;
@@ -60,114 +57,118 @@ body{
   border: 1px solid #079325;
   border-radius: 5px;
 }
-.progres{
+.progres {
   width: 100px;
   height: 10px;
-  background-color: #62FF84;
+  background-color: #62ff84;
 }
 
-.percent{
+.percent {
   text-align: center;
 }
 
-.pokemonImg{
+.pokemonImg {
   width: 200px;
 }
 
-#img2{
-   -webkit-transform: scaleX(-1);
+#img2 {
+  -webkit-transform: scaleX(-1);
   transform: scaleX(-1);
 }
 
-.name{
+.name {
   text-align: center;
   text-transform: capitalize;
 }
 
-.stats{
+.stats {
   font-size: 12px;
   padding: 6px;
   margin-top: 6px;
 }
 
-.menu{
+.menu {
   padding: 5px;
   width: 170px;
   display: flex;
   align-items: center;
   flex-direction: column;
   padding: 6px;
-  margin-top: 6px; 
+  margin-top: 6px;
 }
 
-.okvir{
- background-color: #FFF7D6;
-  border: 3px solid #FFCC00;
+.okvir {
+  background-color: #fff7d6;
+  border: 3px solid #ffcc00;
   border-radius: 10px;
 }
 
 .logs {
-width: 400px;
-min-height: 150px;
-max-height: 250px;
-padding: 5px;
-text-transform:capitalize;
-overflow:auto;
+  width: 400px;
+  min-height: 150px;
+  max-height: 250px;
+  padding: 5px;
+  text-transform: capitalize;
+  overflow: auto;
 }
-.logs p{
+.logs p {
   margin: 4px;
 }
 
-.menu button{
+.menu button {
   margin: 4px;
 }
 
-.down{
+.down {
   display: flex;
   justify-content: space-around;
 }
 
-.message{
+.message {
   color: red;
   font-size: 20px;
   z-index: 10;
 }
 
-.pobjednik{
+.pobjednik {
   position: absolute;
   top: 50px;
   left: 40%;
 }
 
-.attackBox{
+.attackBox {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
-.attackBox img{
+.attackBox img {
   margin: 10px;
 }
 
-button{
+button {
   width: 160px;
   color: white;
-  background-color: #0073BC;
-  border: 3px solid #73B9E5;
+  background-color: #0073bc;
+  border: 3px solid #73b9e5;
   padding: 8px;
   border-radius: 20px;
-  
 }
-
 
 .animate1 {
   animation: attack1 700ms ease-in;
 }
 
 @keyframes attack1 {
-  0%   {transform: translateX(0px);}
-  50%  {transform: translateX(600px);}
-  100% {transform: translateX(0px);}
+  0% {
+    transform: translateX(0px);
+  }
+  50% {
+    transform: translateX(600px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
 }
 
 .animate2 {
@@ -175,9 +176,15 @@ button{
 }
 
 @keyframes attack2 {
-  0%   {transform: translateX(0px);}
-  50%  {transform: translateX(-600px);}
-  100% {transform: translateX(0px);}
+  0% {
+    transform: translateX(0px);
+  }
+  50% {
+    transform: translateX(-600px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
 }
 
 .animateMiss {
@@ -185,35 +192,41 @@ button{
 }
 
 @keyframes miss {
-  0%   {transform: rotate(0deg);}
-  50%  {transform: rotate(180deg);}
-  100% {transform: rotate(359deg);}
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(359deg);
+  }
 }
 
 @media screen and (max-width: 700px) {
-  .down{
+  .down {
     display: flex;
     flex-direction: column;
   }
-  .battleBox button{
+  .battleBox button {
     width: 90px;
   }
-  .battleBox{
-  margin: 0px;
+  .battleBox {
+    margin: 0px;
   }
-  .pokemonBox{
+  .pokemonBox {
     width: 40%;
     margin: 0px;
   }
-  .logo{
+  .logo {
     width: 90%;
   }
-  .kodi{
+  .kodi {
     width: 22%;
-    left:32%;
-    top:-28%;
+    left: 32%;
+    top: -28%;
   }
-  .greetScreen{
+  .greetScreen {
     width: 100vw;
   }
 }
