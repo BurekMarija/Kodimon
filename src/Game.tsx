@@ -4,7 +4,8 @@ import Pokemon from "./Pokemon";
 import Menu from "./Menu";
 import Logs from "./Logs";
 import arrow from "./images/arrow.svg";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
+import { useSelector } from "./";
 import { setPobjedik } from "./reducer/pobjednik";
 import { addLog, resetLog } from "./reducer/logsReducer";
 import CSS from "csstype";
@@ -37,6 +38,8 @@ export default function Game(props: Props) {
 
   React.useEffect(() => {
     catchPokemons();
+    // ovo je bilo namjerno, jebi se ESLint
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   React.useEffect(() => {
@@ -50,7 +53,7 @@ export default function Game(props: Props) {
         }
       }
     }
-  }, [pokemon1, pokemon2]);
+  }, [pokemon1, pokemon2, onOfense]);
 
   //Napad logika i izračun
   function attack() {

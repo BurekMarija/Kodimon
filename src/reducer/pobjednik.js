@@ -1,4 +1,7 @@
-const pobjednikReducer=(state=null, action)=>{
+const pobjednikReducer = (
+  state: ReturnType<typeof setPobjedik>['payload'] = null,
+  action: ReturnType<typeof setPobjedik>
+) => {
     switch(action.type){
         case "SET_POBJEDNIK":
             return action.payload
@@ -8,7 +11,7 @@ const pobjednikReducer=(state=null, action)=>{
 }
 export default pobjednikReducer
 
-export const setPobjedik=(pobjednik)=>{
+export const setPobjedik = (pobjednik: string | null) => {
     return{
         type:"SET_POBJEDNIK",
         payload:pobjednik
